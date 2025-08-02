@@ -39,7 +39,7 @@ Kongres is a smart attendance and engagement system built to help organizations,
    ```bash
    git clone https://github.com/KingDavidJnr/kongres-backend.git
    cd kongres-backend
-````
+   ````
 
 2. Install dependencies:
 
@@ -107,10 +107,9 @@ This project is open source and welcomes contributions. Feel free to fork the re
 
 ## License
 
-[MIT](./LICENSE)
+[MIT License](./LICENSE)
 
 ---
 
 Built with ❤️ by [David Oduse](https://linkedin.com/in/david-oduse)
-
-```
+---
