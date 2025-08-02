@@ -55,3 +55,6 @@ async function startServer() {
 }
 
 startServer();
+
+// Run events expiry cron job
+require("./src/utils/cron.util");
