@@ -33,7 +33,7 @@ app.use("/v1", routes);
 
 // Simple test route to verify the app is working
 app.get("/", (req, res) => {
-  res.status(200).send("Hello, world! Meetvo backend app is running!");
+  res.status(200).send("Hello, world! Kongres backend app is running!");
 });
 
 // Get the port from environment variables (default to 3000 if not set)
