@@ -3,8 +3,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 const helmet = require("helmet");
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
+const prisma = require('./src/lib/prisma');
 const routes = require("./src/routes/index.route");
 
 // Initialize express.js ap

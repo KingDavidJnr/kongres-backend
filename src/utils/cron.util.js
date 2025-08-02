@@ -1,6 +1,5 @@
 const cron = require("node-cron");
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
+const prisma = require("../lib/prisma");
 
 // Run every 5 minutes
 cron.schedule("*/5 * * * *", async () => {
@@ -20,5 +19,7 @@ cron.schedule("*/5 * * * *", async () => {
     console.log(`[CRON] Updated ${result.count} expired events`);
   } catch (error) {
     console.error("[CRON ERROR]", error);
+  } finally {
+    await prisma.$disconnect();
   }
 });
