@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  user_id      BigInt        @id
+  email        String        @unique
+  first_name   String
+  last_name    String
+  password     String        @db.VarChar(255)
+  organizations Organization[]
+  created_at   DateTime      @default(now())
+  updated_at   DateTime      @updatedAt
+
+  @@map("users")
+}
+
+model Organization {
+  id           String        @id @default(uuid())
+  name         String
+  phone        String?
+  owner        User          @relation(fields: [owner_id], references: [user_id])
+  owner_id     BigInt
+  events       Event[]
+  created_at   DateTime      @default(now())
+  updated_at   DateTime      @updatedAt
+
+  @@index([owner_id])
+  @@map("organizations")
+}
+
+model Event {
+  id              String        @id
+  title           String
+  expires_at      DateTime
+  organization    Organization  @relation(fields: [organization_id], references: [id])
+  organization_id String
+  attendances     Attendance[]
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @updatedAt
+
+  @@index([organization_id])
+  @@map("events")
+}
+
+model Attendance {
+  id             String     @id @default(uuid())
+  name           String
+  phone          String?
+  email          String?
+  gender         String?
+  is_first_timer Boolean    @default(false)
+  event          Event      @relation(fields: [event_id], references: [id])
+  event_id       String
+  created_at     DateTime   @default(now())
+
+  @@index([event_id])
+  @@map("attendances")
+}
