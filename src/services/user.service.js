@@ -1,4 +1,4 @@
-const prisma = require('../lib/prisma');
+const prisma = require("../lib/prisma");
 const bcrypt = require("bcrypt");
 
 class UserService {
@@ -10,7 +10,7 @@ class UserService {
         password, // Already hashed by controller
         first_name,
         last_name,
-        user_id
+        user_id,
       },
     });
   }
@@ -52,6 +52,17 @@ class UserService {
 
     const user = await prisma.user.findFirst({ where: whereClause });
     return !!user; // Returns true if email exists, false otherwise
+  }
+
+  async getUserByEmail(email) {
+    try {
+      const user = await prisma.user.findUnique({
+        where: { email },
+      });
+      return user;
+    } catch (error) {
+      throw new Error("Error retrieving user by email");
+    }
   }
 }
 

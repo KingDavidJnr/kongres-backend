@@ -8,8 +8,16 @@ const { verifyToken } = require("./jwt.util");
 const extractTokenPayload = (req) => {
   const token = req.cookies.jwt || req.headers.authorization?.split(" ")[1];
 
-  const decoded = verifyToken(token);
-  return decoded; // Can be { status, message } or { user_id, role, iat, exp }
+  if (!token) {
+    return null;
+  }
+
+  try {
+    const decoded = verifyToken(token);
+    return decoded;
+  } catch (error) {
+    return null;
+  }
 };
 
 /**
@@ -17,10 +25,10 @@ const extractTokenPayload = (req) => {
  */
 const extractUserId = (req) => {
   const decoded = extractTokenPayload(req);
+  if (!decoded) return null;
   if (decoded.status) return decoded;
   return decoded.user_id;
 };
-
 /**
  * Extracts role from token
  */
