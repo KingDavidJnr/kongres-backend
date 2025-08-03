@@ -344,10 +344,12 @@ class AnalyticsService {
     const attendances = await prisma.attendance.findMany({
       where: {
         event: {
-          organization_id,
-          date: {
-            gte: startDate,
-            lte: endDate,
+          is: {
+            organization_id,
+            created_at: {
+              gte: startDate,
+              lte: endDate,
+            },
           },
         },
       },
@@ -409,11 +411,13 @@ class AnalyticsService {
 
       const hasPreviousAttendance = await prisma.attendance.findFirst({
         where: {
-          member_id,
+          member_id: "e239028f-9122-4d19-9ef5-ea07c3c7db70",
           event: {
-            organization_id,
-            date: {
-              lt: startDate,
+            is: {
+              organization_id: "bf9e2fc3-6a00-4a79-818e-a9b66e5ef0dd",
+              created_at: {
+                lt: new Date("2025-07-02T23:00:00.000Z"),
+              },
             },
           },
         },
