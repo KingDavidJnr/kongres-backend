@@ -23,4 +23,7 @@ router.patch("/:event_id", EventController.updateEvent);
 // Delete an event
 router.delete("/:event_id", EventController.deleteEvent);
 
+// Manually expire an event by id
+router.patch("/:event_id/expire", EventController.expireEvent);
+
 module.exports = router;
