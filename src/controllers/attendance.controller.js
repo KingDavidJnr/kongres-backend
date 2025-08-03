@@ -21,7 +21,7 @@ class AttendanceController {
         });
       }
 
-      // Validate and parse is_first_timer
+      // Validate and normalize is_first_timer
       const lower = String(is_first_timer).toLowerCase();
       if (lower !== "true" && lower !== "false") {
         return res.status(400).json({
@@ -32,7 +32,7 @@ class AttendanceController {
 
       let validatedFirstTimer = lower === "true";
 
-      // Fetch event, organization ID, and expiration status
+      // Fetch event and its organization
       const event = await prisma.event.findUnique({
         where: { id: event_id },
         select: {
@@ -49,24 +49,36 @@ class AttendanceController {
         return res.status(410).json({ message: "Event is already expired" });
       }
 
-      // If marked as first timer, validate against members table
-      if (validatedFirstTimer) {
-        const existingMember = await prisma.member.findFirst({
-          where: {
-            organization_id: event.organization_id,
-            OR: [
-              email ? { email } : undefined,
-              phone ? { phone } : undefined,
-            ].filter(Boolean),
-          },
-        });
+      // Check for existing member
+      let member = await prisma.member.findFirst({
+        where: {
+          organization_id: event.organization_id,
+          OR: [
+            email ? { email } : undefined,
+            phone ? { phone } : undefined,
+          ].filter(Boolean),
+        },
+      });
 
-        if (existingMember) {
-          validatedFirstTimer = false;
-        }
+      // If a match is found, they're not a first timer
+      if (validatedFirstTimer && member) {
+        validatedFirstTimer = false;
       }
 
-      // Create attendance record
+      // Create member if they don't exist
+      if (!member) {
+        member = await prisma.member.create({
+          data: {
+            name,
+            phone: phone || null,
+            email: email || null,
+            gender: gender || null,
+            organization_id: event.organization_id,
+          },
+        });
+      }
+
+      // Create attendance with linked member_id
       const attendance = await AttendanceService.createAttendance({
         name,
         phone,
@@ -74,39 +86,13 @@ class AttendanceController {
         gender,
         event_id,
         is_first_timer: validatedFirstTimer,
+        member_id: member.id,
       });
 
-      // Respond immediately
-      res
-        .status(201)
-        .json({ message: "Attendance recorded", data: attendance });
-
-      // Background: Add to members if not already
-      try {
-        const existingMember = await prisma.member.findFirst({
-          where: {
-            organization_id: event.organization_id,
-            OR: [
-              email ? { email } : undefined,
-              phone ? { phone } : undefined,
-            ].filter(Boolean),
-          },
-        });
-
-        if (!existingMember) {
-          await prisma.member.create({
-            data: {
-              name,
-              phone: phone || null,
-              email: email || null,
-              gender: gender || null,
-              organization_id: event.organization_id,
-            },
-          });
-        }
-      } catch (err) {
-        console.error("Background member creation error:", err);
-      }
+      return res.status(201).json({
+        message: "Attendance recorded",
+        data: attendance,
+      });
     } catch (error) {
       console.error("Create attendance error:", error);
       return res.status(500).json({ message: "Internal server error" });

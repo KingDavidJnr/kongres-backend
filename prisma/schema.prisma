@@ -60,9 +60,14 @@ model Attendance {
   is_first_timer Boolean  @default(false)
   event          Event    @relation(fields: [event_id], references: [id])
   event_id       String
+
+  member         Member?  @relation(fields: [member_id], references: [id])
+  member_id      String?
+
   created_at     DateTime @default(now())
 
   @@index([event_id])
+  @@index([member_id])
   @@map("attendances")
 }
 
@@ -75,6 +80,8 @@ model Member {
   phone  String?
   email  String?
   gender String?
+
+  attendances     Attendance[]
 
   created_at DateTime @default(now())
 

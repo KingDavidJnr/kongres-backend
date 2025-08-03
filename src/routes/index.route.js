@@ -20,6 +20,6 @@ router.use("/event", eventRoutes);
 router.use("/attendance", attendanceRoutes);
 
 // Use analytics routes
-router.use("/", analyticsRoutes);
+router.use("/analytics", analyticsRoutes);
 
 module.exports = router;
