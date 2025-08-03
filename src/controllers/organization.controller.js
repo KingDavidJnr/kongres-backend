@@ -10,6 +10,17 @@ class OrganizationController {
       if (!owner_id)
         return res.status(403).json({ message: "User not authenticated!" });
 
+      // Check existing org count for the user
+      const existingOrgs = await OrganizationService.getOrganizationsByOwner(
+        owner_id
+      );
+      if (existingOrgs.length >= 5) {
+        return res.status(400).json({
+          message:
+            "Organization limit reached. You can only own up to 5 organizations.",
+        });
+      }
+
       const { name, phone } = req.body;
       const org = await OrganizationService.createOrganization({
         name,
