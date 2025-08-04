@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node -r dotenv/config index.js",
     "dev": "nodemon index.js",
-    "sync:prisma": "prisma db push && prisma generate"
+    "sync:prisma": "prisma db push && prisma generate",
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "",
