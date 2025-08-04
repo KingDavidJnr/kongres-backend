@@ -3,7 +3,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 const helmet = require("helmet");
-const prisma = require('./src/lib/prisma');
+const prisma = require("./src/lib/prisma");
 const routes = require("./src/routes/index.route");
 
 // Initialize express.js ap
@@ -18,7 +18,11 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(
   cors({
-    origin: ["https://kongres.lovable.app", "https://kongres.vercel.app"],
+    origin: [
+      "https://kongres.lovable.app",
+      "https://kongres.vercel.app",
+      "https://kongres.app",
+    ],
     credentials: true, // Allow cookies and authentication headers
   })
 );
