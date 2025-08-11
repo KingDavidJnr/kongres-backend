@@ -22,6 +22,7 @@ app.use(
       "https://kongres.lovable.app",
       "https://kongres.vercel.app",
       "https://kongres.app",
+      "http://localhost:8080/",
     ],
     credentials: true, // Allow cookies and authentication headers
   })
